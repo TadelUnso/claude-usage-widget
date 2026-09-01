@@ -82,7 +82,11 @@ public struct WidgetRootView: View {
         .background(
             ZStack {
                 PanelBackground()
-                Theme.panel.opacity(0.35)
+                // As opaque as the header and the notice: the material blends
+                // the wallpaper in, so a thin scrim leaves the panel as light
+                // as whatever is behind the window — and the pastel palette
+                // disappears into it the moment the wallpaper is bright.
+                Theme.panel.opacity(0.92)
             }
             .clipShape(RoundedRectangle(cornerRadius: 22 * scale, style: .continuous))
         )
@@ -369,6 +373,11 @@ private struct PanelBackground: NSViewRepresentable {
         view.material = .hudWindow
         view.blendingMode = .behindWindow
         view.state = .active
+        // The palette is dark-only, so the material has to be too — otherwise
+        // a Mac set to Light appearance renders the panel in the light variant
+        // and the pastels are read against the wrong ground. Same pin the
+        // sibling mole-widget uses.
+        view.appearance = NSAppearance(named: .darkAqua)
         return view
     }
 
